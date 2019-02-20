@@ -1,0 +1,218 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+\usepackage[parfill]{parskip}    			% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage{tikz}
+
+
+\title{Homework 1 \\ CS 5787 Deep Learning \\ Spring 2019}
+%\author{John Doe - \texttt{jdoe@rit.edu}}
+\date{}					
+
+\begin{document}
+
+\maketitle
+
+\textbf{Due: See Canvas}
+
+\section*{Instructions}
+
+Your homework submission must cite any references used (including articles, books, code, websites, and personal communications).  All solutions must be written in your own words, and you must program the algorithms yourself. \textbf{If you do work with others, you must list the people you worked with.} Submit your solutions as a PDF to Canvas. 
+
+Your homework solution must be typed. We urge you to prepare it in \LaTeX. It must be output to PDF format. To use \LaTeX, we suggest using \url{http://overleaf.com}, which is free and can be accessed online.
+
+Your programs must be written in Python. The relevant code to the problem should be in the PDF you turn in. If a problem involves programming, then the code should be shown as part of the solution to that problem. One easy way to do this in \LaTeX \, is to use the verbatim environment, i.e., \textbackslash begin\{verbatim\} YOUR CODE \textbackslash end\{verbatim\}. For this assignment, you may not use a neural network toolbox. \textbf{The algorithm should be implemented using only NumPy.}
+
+If you have forgotten your linear algebra, you may find  \textit{The Matrix Cookbook} useful, which can be readily found online. You may wish to use the program \textit{MathType}, which can easily export equations to AMS \LaTeX \, so that you don't have to write the equations in \LaTeX \, directly: \url{http://www.dessci.com/en/products/mathtype/}
+
+\sloppy
+\textbf{If told to implement an algorithm, don't use a toolbox, or you will receive no credit.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Problem 1 - Softmax Properties}
+
+\subsection*{Part 1 (7 points)}
+Recall the softmax function, which is the most common activation function used for the output of a neural network trained to do classification. In a vectorized form, it is given by
+\begin{equation*}
+\operatorname{softmax} \left( {\mathbf{a}} \right) = \frac{{\exp \left( {\mathbf{a}} \right)}}
+{{\sum\nolimits_{j = 1}^K {\exp \left( {a_j } \right)} }},
+\end{equation*}
+where $\mathbf{a}\in \mathbb{R}^K$. The $\exp$ function in the numerator is applied element-wise and $a_j$ denotes the $j$'th element of $\mathbf{a}$.
+
+Show that the softmax function is invariant to constant offsets to its input, i.e., 
+\[
+\operatorname{softmax} \left( {{\mathbf{a}} + {c\mathbf{1}}} \right) = \operatorname{softmax} \left( {\mathbf{a}} \right),
+\]
+where $c\in \mathbb{R}$ is some constant and $\mathbf{1}$ denotes a column vector of 1's.
+
+\textbf{Solution:} \\
+
+%----------------------------------
+\subsection*{Part 2 (3 points)}
+In practice, why is the observation that the softmax function is invariant to constant offsets to its input important when implementing it in a neural network?
+
+\textbf{Solution:} \\
+
+%---------------------------------
+\section*{Problem 2 - Implementing a Softmax Classifier}
+
+For this problem, you will use the 2-dimensional Iris dataset. Download \texttt{iris-train.txt} and \texttt{iris-test.txt} from Canvas. Each row is one data instance. The first column is the label (1, 2 or 3) and the next two columns are features.
+
+Write a function to load the data and the labels, which are returned as NumPy arrays.
+
+
+\subsection*{Part 1 - Implementation \& Evaluation (20 points)}
+Recall that a softmax classifier is a shallow one-layer neural network of the form:
+\begin{equation*}
+P\left( {C = k|{\bf{x}}} \right) = \frac{{\exp \left( {{\bf{w}}_k^T {\bf{x}}} \right)}}
+{{\sum\nolimits_{j = 1}^K {\exp \left( {{\bf{w}}_j^T {\bf{x}}} \right)} }}
+\end{equation*}
+where $\mathbf{x}$ is the vector of inputs, $K$ is the total number of categories, and $\mathbf{w}_k$ is the weight vector for category $k$.
+
+In this problem you will implement a softmax classifier from scratch. \textbf{Do not use a toolbox.} Use the softmax (cross-entropy) loss with $L_2$ weight decay regularization. Your implementation should use stochastic gradient descent with mini-batches and momentum to minimize softmax (cross-entropy) loss of this single layer neural network. To make your implementation fast, do as much as possible using matrix and vector operations. This will allow your code to use your environment's BLAS. Your code should loop over epochs and mini-batches, but do not iterate over individual elements of vectors and matrices. Try to make your code as fast as possible. I suggest using profiling and timing tools to do this.
+
+Train your classifier on the Iris dataset for 1000 epochs. You should either subtract the mean of the training features from the train and test data or normalize the features to be between -1 and 1 (instead of 0 and 1). Hand tune the hyperparameters (i.e., learning rate, mini-batch size, momentum rate, and $L_2$ weight decay factor) to achieve the best possible training accuracy. During a training epoch, your code should compute the mean per-class accuracy for the training data and the loss. After each epoch, compute the mean per-class accuracy for the testing data and the loss as well. \textbf{The test data should not be used for updating the weights.}
+
+After you have tuned the hyperparameters, generate two plots next to each other. The one on the left should show the cross-entropy loss during training for both the train and test sets as a function of the number of training epochs. The plot on the right should show the mean per-class accuracy as a function of the number of training epochs on both the train set and the test set. 
+
+What is the best test accuracy your model achieved? What hyperparameters did you use? Would early stopping have helped improve accuracy on the test data?
+
+\textbf{Solution:} \\
+
+
+
+%--------------------
+\subsection*{Part 2 - Displaying Decision Boundaries (10 points)}
+
+Plot the decision boundaries learned by softmax classifier on the Iris dataset, just like we saw in class. On top of the decision boundaries, generate a scatter plot of the training data. Make sure to label the categories.
+
+\textbf{Solution:} \\
+
+
+
+
+\section*{Problem 3 - Visualizing and Loading CIFAR-10 (5 points)}
+
+The CIFAR-10 dataset contains 60,000 RGB images from 10 categories. Download it from here: \url{https://www.cs.toronto.edu/~kriz/cifar.html}\\
+Read the documentation.
+
+Write a function to load the dataset, e.g., \\ \texttt{trainLabels, trainFeat, testLabels, testFeat = loadCIFAR10()} where \texttt{trainLabels} has the categories for the training data, \texttt{trainFeat} has the 3072 dimensional image features from the training data, etc. Each of the returned variables should be NumPy arrays.
+
+Using the first CIFAR-10 training batch file, display the first three images from each of the 10 categories as a $3 \times 10$ image array. The images are stored as rows, and you will need to reshape them into $32 \times 32 \times 3$ images if you load up the raw data yourself. It is okay to use the PyTorch toolbox for loading them or you can make your own. 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Problem 4 - Classifying Images (10 points)}
+
+Using the softmax classifier you implemented, train the model on CIFAR-10's training partitions. To do this, you will need to treat each image as a vector. You will need to tweak the hyperparmaters you used earlier. 
+
+Plot the training loss as a function of training epochs. Try to minimize the error as much as possible. What were the best hyperparmeters? Output the final test accuracy and a normalized $10 \times 10$ confusion matrix computed on the test partition. Make sure to label the columns and rows of the confusion matrix.
+
+\textbf{Solution:}\\
+
+
+\section*{Problem 5 - Regression with Shallow Nets}
+
+
+Tastes in music have gradually changed over the years, and our goal is to predict the year of a song based on its timbre summary features. 
+
+
+We wish to build a linear model that predicts the year. Given an input $\mathbf{x} \in \mathbb{R}^{90}$, we want to find parameters for a model $\hat{y} = \mathrm{round} \left(f \left( \mathbf{x} \right) \right)$ that predicts the year, where $\hat{y} \in \mathbb{Z}$. 
+
+We are going to explore three shallow (linear) neural network models with different activation functions for this task.
+
+To evaluate the model, you must round the output of your linear neural network. You then compute the mean squared error.
+
+
+\subsection*{Part 1 - Load and Explore the Data (5 points)}
+
+Download the music year classification dataset from Canvas, which is located in \texttt{music-dataset.txt}. 
+Each row is an instance. The first value is the target to be predicted (a year), and the remaining 90 values in a row are all input features. Split the dataset into train and test partitions by treating the first 463,714 examples as the train set and the last 51,630 examples as the test set.  The first 12 dimensions are the average timbre and the remaining 78 are the timbre covariance in the song.
+
+
+Write a function to load the dataset, e.g., \\ \texttt{trainYears, trainFeat, testYears, testFeat = loadMusicData(fname, addBias)} where \texttt{trainYears} has the years for the training data, \texttt{trainFeat} has the features, etc. \texttt{addBias} appends a `1' to your feature vectors.  Each of the returned variables should be NumPy arrays.
+
+Write a function \texttt{mse = musicMSE(pred, gt)} where the inputs are the predicted year and the `ground truth' year from the dataset. The function computes the mean squared error (MSE) by rounding \texttt{pred} before computing the MSE.
+
+
+Load the dataset and discuss its properties.  What is the range of the variables? How might you normalize them? What years are represented in the dataset?
+
+Generate a histogram of the labels in the train and test set and discuss any years or year ranges that are under/over-represented.
+
+What will the test mean squared error (MSE) be if your classifier always outputs the most common year in the dataset? 
+
+What will the test MSE be if your classifier always outputs 1998, the rounded mean of the years?
+
+
+
+\textbf{Tip}: Debug your models by using an initial training set that only has about 100 examples and make sure your loss is going down.
+
+
+\textbf{Solution:}\\
+
+
+\subsection*{Part 2 - Ridge Regression (10 points)}
+Possibly the simplest approach to the problem is linear ridge regression, i.e., $\hat{y} = \mathbf{w}^T\mathbf{x}$, where $\mathbf{x} \in \mathbb{R}^d$ and we assume the bias is integrated by appending a constant to $\mathbf{x}$. The `ridge' refers to $L_2$ regularization, which is closely related to  $L_2$ weight decay.  
+
+ Minimize the loss using gradient descent, just as we did with the softmax classifier to find $\mathbf{w}$. The loss is given by
+ \[L = \sum\limits_{j = 1}^N {\left\| {{{\mathbf{w}}^T}{{\mathbf{x}}_j} - {y_j}} \right\|_2^2}  + \alpha \left\| {\mathbf{w}} \right\|_2^2 , \]
+where $\alpha > 0$ is a hyperparameter, $N$ is the total number of samples in the dataset, and $y_j$ is the $j$-th ground truth year in the dataset. Differentiate the loss with respect to $\mathbf{w}$ to get the gradient descent learning rule and give it here. Use stochastic gradient descent with mini-batches to minimize the loss and evaluate the train and test MSE. Show the train loss as a function of epochs.
+
+ As you probably learned in earlier courses, this problem can be solved directly using the pseudoinverse. Compare both solutions.
+
+
+\textbf{Tip:} If you don't use a constant, things will go very bad. If you don't normalize your features by `z-score' normalization of your data then things will go very badly. This means you should compute the training mean across feature dimensions and the training standard deviation, and then normalize by subtracting the training mean from both the train and test sets, and then divide both sets by the train standard deviation. 
+
+
+\textbf{Solution:}\\
+
+
+
+
+
+\subsection*{Part 3 - Poisson (Count) Regression (10 points)}
+A potentially interesting way to do this problem is to treat it as a counting problem. In this case, the prediction is given by $\hat{y} = \exp \left( \mathbf{w}^T \mathbf{x} \right)$, where we again assume the bias is incorporated using the trick of appending a constant to $\mathbf{x}$. 
+
+The loss is given by 
+\[L = \sum\limits_{j = 1}^N {\left( {\exp \left( {{{\mathbf{w}}^T}{{\mathbf{x}}_j}} \right) - {y_j}{{\mathbf{w}}^T}{{\mathbf{x}}_j}} \right)} , \]
+where we have omitted the $L_2$ regularization term. Minimize it with respect to parameters/weights $\mathbf{w}$ using SGD with mini-batches. Plot the loss. Compute the train and test MSE using the function we created earlier.
+
+
+\textbf{Solution:}\\
+
+
+
+\subsection*{Part 4 - Classification (5 points)}
+One way to do this problem is to treat it as a classification problem by treating each year as a category. Use your softmax classifier from earlier with this dataset and compute the MSE for the train and test dataset. Discuss the pros and cons of treating this as a classification problem.
+
+
+\textbf{Solution:}\\
+
+
+\subsection*{Part 5 - Model Comparison (10 points)}
+
+Discuss and compare the behaviors of the models. Are there certain periods (ranges of years) in which models perform better than others? Where are the largest errors across models. Did $L_2$ regularization help for some models but not others?
+
+
+\textbf{Solution:}\\
+
+
+
+%---------------
+\section*{Softmax Classifier Code Appendix}
+
+
+\section*{Linear Models for Regression Code Appendix}
+
+
+
+\end{document}  

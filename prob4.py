@@ -1,13 +1,10 @@
 
 '''
-Prob 1, part 2
+Prob 4
 
-Softmax being invariant to constants allows us to compare the relative probabilities of a class and not the magnitude
+use softmax classifier to classify CIFAR 10
 
 '''
-
-# Problem 2 Iris dataset
-
 # Part 1 - load data
 
 import numpy as np
@@ -17,19 +14,27 @@ import matplotlib.pyplot as plt
 import random
 from matplotlib.colors import ListedColormap
 
-# part 2 - softmax classifier
+# %matplotlib inline
+import torchvision
+import torchvision.transforms as transforms
+
+# part 4 - Softmax classifier for CIFAR, regression.  need to change loss and W matrix
 
 class SoftmaxClassifier:
 
-    def __init__(self, epochs, learning_rate, batch_size, regularization, momentum):
+    def __init__(self, feat_dims, output_classes, epochs, learning_rate, batch_size, regularization, momentum):
 
+        self.feat_dims = feat_dims
+        self.output_classes = output_classes
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.regularization = regularization
         self.momentum = momentum
-        self.velocity = None
-        self.weights = None
+
+        # create weights array/matrix size (num features x output)
+        self.weights = 0.001 * np.random.rand(self.feat_dims, self.output_classes)
+        self.velocity = np.zeros(self.weights.shape)
 
     def one_hot(self, y):
         # get a vector of labels, convert into 1 hot
@@ -43,7 +48,7 @@ class SoftmaxClassifier:
 
     def calc_accuracy(self, x, y):
         #  predict the class, then compare with the correct label.  return the average correct %
-        pred = np.argmax(x.dot(self.weights), 1)  # predict
+        pred = np.argmax(x.dot(self.weights), 1)  # get prediction
         pred = pred.reshape((-1, 1))  # convert to column vector
         return np.mean(np.equal(y, pred))  # return average over all the 1's (over the total)
 
@@ -51,7 +56,7 @@ class SoftmaxClassifier:
         # calc the softmax
         exp_x = np.exp(x - np.max(x))  # make sure it doesn't blow up by sub max
 
-        # make sure sum along columns, and keep dims keeps the exact same dim when summing
+        # make sure sum along columns, and keepdims keeps the exact same dim when summing
         # ie keep cols, instead of converting to rows
         y = np.sum(exp_x, axis=1, keepdims=True)
         return exp_x / y
@@ -116,12 +121,7 @@ class SoftmaxClassifier:
     def run_epochs(self, x_train, y_train, x_test, y_test):
         # start the training/valid by looping through epochs
 
-        num_dim = x_train.shape[1]  # num of dimensions
-        n_classes = 3  # num output
-
-        # create weights array/matrix size (num features x output)
-        self.weights = 0.001 * np.random.rand(num_dim, n_classes)
-        self.velocity = np.zeros(self.weights.shape)
+        
 
         # store losses and accuracies here
         train_losses = []
@@ -146,11 +146,6 @@ class SoftmaxClassifier:
             test_acc_arr.append(test_acc)
 
         return train_losses, test_losses, train_acc_arr, test_acc_arr  # return all the vals
-
-            # print('Training loss {}'.format(train_loss))
-            # print('Test loss {}'.format(test_loss))
-            # print('Train Accuracy {}'.format(train_acc))
-            # print('Test Accuracy {}'.format(test_acc))
 
     def plot_graph(self, train_losses, test_losses, train_acc, test_acc):
         # plot graph
@@ -212,32 +207,34 @@ class SoftmaxClassifier:
         plt.show()
 
 
-# load data
-train_data = loadtxt('iris-train.txt')
-x_train = train_data[:,1:]
-y_train = train_data[:,0].astype(int)-1  # make sure to minus 1 for label
-y_train = y_train.reshape((-1, 1))  # convert to column vector
-
-test_data = loadtxt('iris-test.txt')
-x_test = test_data[:,1:]
-y_test = test_data[:,0].astype(int)-1  # make sure to minus 1 for label
-y_test = y_test.reshape((-1, 1))   # convert to column vector
+# ==============  start the CIFAR10 training  ======================= #
 
 
-# set hyperparameters here
-epochs = 1000
-learning_rate = 0.01  # [0.1, 0.01, 0.001]
-batch_size = 8  # try powers of 2
-regularization = 0.01  # L2 weight decay, range [1, 0.1, 0.01, 0.001]
-momentum = 0.10  # started with 0 to 1
+# # load data
+# train_data = loadtxt('iris-train.txt')
+# x_train = train_data[:,1:]
+# y_train = train_data[:,0].astype(int)-1  # make sure to minus 1 for label
+# y_train = y_train.reshape((-1, 1))  # convert to column vector
 
-smc = SoftmaxClassifier(epochs, learning_rate, batch_size, regularization, momentum)
-train_losses, test_losses, train_acc, test_acc = smc.run_epochs(x_train, y_train, x_test, y_test)
-smc.plot_graph(train_losses, test_losses, train_acc, test_acc)
-smc.plot_decision_boundary(x_train, y_train)
-smc.plot_decision_boundary(x_test, y_test)
+# test_data = loadtxt('iris-test.txt')
+# x_test = test_data[:,1:]
+# y_test = test_data[:,0].astype(int)-1  # make sure to minus 1 for label
+# y_test = y_test.reshape((-1, 1))   # convert to column vector
 
-# mean = 1
+
+# # set hyperparameters here
+# epochs = 1000
+# learning_rate = 0.01  # [0.1, 0.01, 0.001]
+# batch_size = 8  # try powers of 2
+# regularization = 0.01  # L2 weight decay, range [1, 0.1, 0.01, 0.001]
+# momentum = 0.10  # started with 0 to 1
+
+# smc = SoftmaxClassifier(epochs, learning_rate, batch_size, regularization, momentum)
+# train_losses, test_losses, train_acc, test_acc = smc.run_epochs(x_train, y_train, x_test, y_test)
+# smc.plot_graph(train_losses, test_losses, train_acc, test_acc)
+# smc.plot_decision_boundary(x_train, y_train)
+# smc.plot_decision_boundary(x_test, y_test)
+
 
 
 
