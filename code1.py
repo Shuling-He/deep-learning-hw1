@@ -69,6 +69,7 @@ class SoftmaxClassifier:
 
         # take neg log of the highest prob. for that row
         neg_log_loss = -np.log(probs[np.arange(n_samples), np.argmax(probs, axis=1)])
+        # neg_log_loss = -np.log(probs[np.arange(n_samples), y])
         loss = np.sum(neg_log_loss)  # sum to get total loss across all samples
         # calc the regularization loss too
         reg_loss = 0.5 * self.regularization * np.sum(self.weights * self.weights)
