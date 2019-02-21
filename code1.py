@@ -212,18 +212,22 @@ class SoftmaxClassifier:
         plt.legend(loc='upper left')
         plt.show()
 
+def load_data():
 
-# load data
-train_data = loadtxt('iris-train.txt')
-x_train = train_data[:,1:]
-y_train = train_data[:,0].astype(int)-1  # make sure to minus 1 for label
-y_train = y_train.reshape((-1, 1))  # convert to column vector
+    # load data
+    train_data = loadtxt('iris-train.txt')
+    x_train = train_data[:,1:]
+    y_train = train_data[:,0].astype(int)-1  # make sure to minus 1 for label
+    y_train = y_train.reshape((-1, 1))  # convert to column vector
 
-test_data = loadtxt('iris-test.txt')
-x_test = test_data[:,1:]
-y_test = test_data[:,0].astype(int)-1  # make sure to minus 1 for label
-y_test = y_test.reshape((-1, 1))   # convert to column vector
+    test_data = loadtxt('iris-test.txt')
+    x_test = test_data[:,1:]
+    y_test = test_data[:,0].astype(int)-1  # make sure to minus 1 for label
+    y_test = y_test.reshape((-1, 1))   # convert to column vector
 
+    return x_train, y_train, x_test, y_test
+
+x_train, y_train, x_test, y_test = load_data()
 
 # set hyperparameters here
 epochs = 1000
