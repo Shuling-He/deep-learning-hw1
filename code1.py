@@ -148,18 +148,13 @@ class SoftmaxClassifier:
 
         return train_losses, test_losses, train_acc_arr, test_acc_arr  # return all the vals
 
-            # print('Training loss {}'.format(train_loss))
-            # print('Test loss {}'.format(test_loss))
-            # print('Train Accuracy {}'.format(train_acc))
-            # print('Test Accuracy {}'.format(test_acc))
-
     def plot_graph(self, train_losses, test_losses, train_acc, test_acc):
         # plot graph
         plt.subplot(1, 2, 1)
         plt.plot(train_losses, label="Train loss")
         plt.plot(test_losses, label="Test loss")
         plt.legend(loc='best')
-        plt.title("Epochs vs. Loss")
+        plt.title("Softmax: Loss vs Epochs")
         plt.xlabel("Iterations")
         plt.ylabel("Loss (Cross entropy)")
 
@@ -167,7 +162,7 @@ class SoftmaxClassifier:
         plt.plot(train_acc, label="Train Accuracy")
         plt.plot(test_acc, label="Test Accuracy")
         # plt.legend(loc='best')
-        plt.title("Epochs vs Accuracy")
+        plt.title("Softmax: Accuracy vs Epochs")
         plt.xlabel("Iterations")
         plt.ylabel("Accuracy")
         plt.show()
@@ -232,7 +227,7 @@ x_train, y_train, x_test, y_test = load_data()
 # set hyperparameters here
 epochs = 1000
 learning_rate = 0.01  # [0.1, 0.01, 0.001]
-batch_size = 8  # try powers of 2
+batch_size = 12  # try powers of 2
 regularization = 0.01  # L2 weight decay, range [1, 0.1, 0.01, 0.001]
 momentum = 0.10  # started with 0 to 1
 
@@ -242,8 +237,7 @@ smc.plot_graph(train_losses, test_losses, train_acc, test_acc)
 smc.plot_decision_boundary(x_train, y_train)
 smc.plot_decision_boundary(x_test, y_test)
 
-# mean = 1
-
+print('best test accuracy:', np.max(test_acc))
 
 
 
