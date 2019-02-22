@@ -43,7 +43,9 @@ class SoftmaxClassifier:
 
     def calc_accuracy(self, x, y):
         #  predict the class, then compare with the correct label.  return the average correct %
-        pred = np.argmax(x.dot(self.weights), 1)  # predict
+        f = x.dot(self.weights)
+        probs = self.softmax(f)
+        pred = np.argmax(probs, 1)  # predict
         pred = pred.reshape((-1, 1))  # convert to column vector
         return np.mean(np.equal(y, pred))  # return average over all the 1's (over the total)
 
